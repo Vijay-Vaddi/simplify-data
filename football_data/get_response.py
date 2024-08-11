@@ -11,7 +11,7 @@ headers = {
 
 def get_response(items_to_fetch):
 
-    connection.request("GET", "/v3/countries", headers=headers)
+    connection.request("GET", items_to_fetch, headers=headers)
     result = connection.getresponse()
     response_body = result.read()
 

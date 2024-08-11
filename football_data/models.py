@@ -22,3 +22,9 @@ class EndpointTracker(models.Model):
     
     def __str__(self) -> str:
         return self.name
+    
+class Season(models.Model):
+    year = models.IntegerField(editable=False, unique=True)
+    
+    def __str__(self):
+        return str(self.year)
