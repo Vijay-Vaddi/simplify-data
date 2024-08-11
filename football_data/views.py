@@ -33,13 +33,14 @@ def countries(request):
     countries = get_response(endpoint)
     
     for country_item in countries:
-        country = Country(
-            name = country_item['name'],
-            code = country_item['code'],
-            flag = country_item['flag'],
+        name = country_item['name'].replace('-', ' ')
+        country, created = Country.objects.get_or_create(
+            name = name
         )
+        country.code = country_item['code'] 
+        country.flag = country_item['flag']
         country.save()
-    
+
     return HttpResponse("Countries saved")
 
 def seasons(request):
@@ -69,5 +70,44 @@ def seasons(request):
             year = season,
         )
         season.save()
-    
+
     return HttpResponse('Seasons endpoint')
+
+
+
+
+
+# def teams_countries(request):
+#     print('inside teams countries')
+#     category = 'Teams'
+#     enpoint_name = 'Teams countries'
+#     endpoint = "/v3/teams/countries"
+
+#     endpoint_tracker, created = EndpointTracker.objects.get_or_create(
+#         name=enpoint_name, category=category, endpoint=endpoint
+#     ) 
+
+#     # if endpoint request exists
+#     if not created:
+#         # and if last request time > 1 day, clear all countries data
+#         if timezone.now() - endpoint_tracker.last_requested > timedelta(days=1):
+#             Country.objects.all().delete()
+#             print('deleting old data')
+#         else:
+#             # if last requested time <1 day no need to fetch data
+#             return HttpResponse('Teams countries Data upto date')
+    
+#     # make new request to endpoint and fetch data
+#     # if its first request from endpoint or time since last_request > 1
+#     countries = get_response(endpoint)
+#     print(countries)
+#     for country_item in countries:
+#         name = country_item['name'].replace('-', ' ')
+#         country, created = Country.objects.get_or_create(
+#             name = name
+#         )
+#         country.code = country_item['code'] 
+#         country.flag = country_item['flag']
+#         country.save()
+    
+#     return HttpResponse("Teams countries saved")

@@ -2,3 +2,14 @@ Date time value issues,
 Time zone issues, offset aware/offset naive 
 -- used DateTimeField and timezone instead
 
+when trying to save countries from teams, country name with hyphens are saving as duplicates
+
+other issues 
+	Antigua And Barbuda
+	Antigua and Barbuda
+
+    Bosnia
+	Bosnia Herzegovina
+	Bosnia and Herzegovina
+
+    

@@ -6,6 +6,6 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('countries', views.countries, name='countries'),
     path('seasons', views.seasons, name='seasons'),
+    path('teams/countries', views.teams_countries, name='teams_countries'),
     
-
 ]
