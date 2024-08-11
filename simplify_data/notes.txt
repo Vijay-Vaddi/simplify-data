@@ -1,0 +1,5 @@
+1. saving countries to sql table using Country model. 
+2. on each request, the countries are being appended with same values 
+    -- so adding a 'last requested date_time' variables to keep track
+    -- and only update if the time is 24hr+
+
