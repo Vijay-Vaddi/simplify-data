@@ -15,7 +15,7 @@ class EndpointTracker(models.Model):
     name = models.CharField(max_length=50)
     category = models.CharField(max_length=50)
     endpoint = models.CharField(max_length=256, unique=True)
-    last_requested = models.TimeField(auto_now_add=True)
+    last_requested = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name_plural = "Endpoints"
