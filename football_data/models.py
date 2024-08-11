@@ -1,5 +1,4 @@
 from django.db import models
-import uuid
 
 class Country(models.Model):
     code = models.CharField(max_length=10, null=True, blank=True)
@@ -12,3 +11,14 @@ class Country(models.Model):
     def __str__(self) -> str:
         return self.name
 
+class EndpointTracker(models.Model):
+    name = models.CharField(max_length=50)
+    category = models.CharField(max_length=50)
+    endpoint = models.CharField(max_length=256, unique=True)
+    last_requested = models.TimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Endpoints"
+    
+    def __str__(self) -> str:
+        return self.name
