@@ -33,13 +33,18 @@ def countries(request):
     countries = get_response(endpoint)
     
     for country_item in countries:
-        name = country_item['name'].replace('-', ' ')
+        name = country_item['name'].replace('-', ' ').title()
         country, created = Country.objects.get_or_create(
             name = name
         )
-        country.code = country_item['code'] 
-        country.flag = country_item['flag']
+
+        # to ensure data stays with most info
+        if country_item['code']:
+            country.code = country_item['code'] 
+        if country_item['flag']:
+            country.flag = country_item['flag']
         country.save()
+        
 
     return HttpResponse("Countries saved")
 
@@ -134,19 +139,19 @@ def team_seasons(request):
     enpoint_name = 'Teams Seasons'
     endpoint = "/v3/teams/seasons?team=33"
 
-    # endpoint_tracker, created = EndpointTracker.objects.get_or_create(
-    #     name=enpoint_name, category=category, endpoint=endpoint
-    # ) 
+    endpoint_tracker, created = EndpointTracker.objects.get_or_create(
+        name=enpoint_name, category=category, endpoint=endpoint
+    ) 
 
-    # # if endpoint request exists
-    # if not created:
-    #     # and if last request time > 1 day, clear all countries data
-    #     if timezone.now() - endpoint_tracker.last_requested > timedelta(days=1):
-    #         Season.objects.all().delete()
-    #         print('deleting old data')
-    #     else:
-    #         # if last requested time <1 day no need to fetch data
-    #         return HttpResponse('Data upto date')
+    # if endpoint request exists
+    if not created:
+        # and if last request time > 1 day, clear all countries data
+        if timezone.now() - endpoint_tracker.last_requested > timedelta(days=1):
+            Season.objects.all().delete()
+            print('deleting old data')
+        else:
+            # if last requested time <1 day no need to fetch data
+            return HttpResponse('Data upto date')
     
     team_id = 33
     team_seasons = get_response(endpoint)
@@ -160,37 +165,40 @@ def team_seasons(request):
 
     return HttpResponse('Teams seasons saved')
 
-# def teams_countries(request):
-#     print('inside teams countries')
-#     category = 'Teams'
-#     enpoint_name = 'Teams countries'
-#     endpoint = "/v3/teams/countries"
+def teams_countries(request):
+    category = 'Teams'
+    enpoint_name = 'Teams countries'
+    endpoint = "/v3/teams/countries"
 
-#     endpoint_tracker, created = EndpointTracker.objects.get_or_create(
-#         name=enpoint_name, category=category, endpoint=endpoint
-#     ) 
+    endpoint_tracker, created = EndpointTracker.objects.get_or_create(
+        name=enpoint_name, category=category, endpoint=endpoint
+    ) 
 
-#     # if endpoint request exists
-#     if not created:
-#         # and if last request time > 1 day, clear all countries data
-#         if timezone.now() - endpoint_tracker.last_requested > timedelta(days=1):
-#             Country.objects.all().delete()
-#             print('deleting old data')
-#         else:
-#             # if last requested time <1 day no need to fetch data
-#             return HttpResponse('Teams countries Data upto date')
+    # if endpoint request exists
+    if not created:
+        # and if last request time > 1 day, clear all countries data
+        if timezone.now() - endpoint_tracker.last_requested > timedelta(days=1):
+            Country.objects.all().delete()
+            print('deleting old data')
+        else:
+            # if last requested time <1 day no need to fetch data
+            return HttpResponse('Teams countries Data upto date')
     
-#     # make new request to endpoint and fetch data
-#     # if its first request from endpoint or time since last_request > 1
-#     countries = get_response(endpoint)
-#     print(countries)
-#     for country_item in countries:
-#         name = country_item['name'].replace('-', ' ')
-#         country, created = Country.objects.get_or_create(
-#             name = name
-#         )
-#         country.code = country_item['code'] 
-#         country.flag = country_item['flag']
-#         country.save()
+    # make new request to endpoint and fetch data
+    # if its first request from endpoint or time since last_request > 1
+    countries = get_response(endpoint)
     
-#     return HttpResponse("Teams countries saved")
+    for country_item in countries:
+        name = country_item['name'].replace('-', ' ').title()
+        country, created = Country.objects.get_or_create(
+            name = name
+        )
+
+        # to ensure current data not replaced by Null or ''
+        if country_item['code']:
+            country.code = country_item['code'] 
+        if country_item['flag']:
+            country.flag = country_item['flag']
+        country.save()
+    
+    return HttpResponse("Teams countries saved")
