@@ -129,6 +129,36 @@ def team_info(request):
 
     return HttpResponse('Team info retrieved')
 
+def team_seasons(request):
+    category = 'Teams'
+    enpoint_name = 'Teams Seasons'
+    endpoint = "/v3/teams/seasons?team=33"
+
+    # endpoint_tracker, created = EndpointTracker.objects.get_or_create(
+    #     name=enpoint_name, category=category, endpoint=endpoint
+    # ) 
+
+    # # if endpoint request exists
+    # if not created:
+    #     # and if last request time > 1 day, clear all countries data
+    #     if timezone.now() - endpoint_tracker.last_requested > timedelta(days=1):
+    #         Season.objects.all().delete()
+    #         print('deleting old data')
+    #     else:
+    #         # if last requested time <1 day no need to fetch data
+    #         return HttpResponse('Data upto date')
+    
+    team_id = 33
+    team_seasons = get_response(endpoint)
+    team = Team.objects.get(id=team_id)
+    for season in team_seasons:
+        season, created = Season.objects.get_or_create(year=season)
+        season.save()
+        team.seasons.add(season)
+    
+    team.save()
+
+    return HttpResponse('Teams seasons saved')
 
 # def teams_countries(request):
 #     print('inside teams countries')
