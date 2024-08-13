@@ -12,4 +12,20 @@ other issues
 	Bosnia Herzegovina
 	Bosnia and Herzegovina
 
-    
+    added name = country_item['name'].replace('-', ' ').title()
+	logic to avoid duplicates 
+
+
+Non String type values returned, 
+countries unique contraints failed even though searched by countryname, for eg "England"
+Null values in venue id is not letting save data as django doesnt let that, 
+	either allow null = true in models or skip team/venue items with null id in venue 
+	skipped linked team to venue if venue is null. 
+
+-------
+Team name unique constraint failed. 
+=====
+	team ID is unique as per docs so removed unique name option
+
+
+
