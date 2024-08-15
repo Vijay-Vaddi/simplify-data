@@ -214,4 +214,3 @@ def teams_countries(request):
     
     return HttpResponse("Teams countries saved")
 
-

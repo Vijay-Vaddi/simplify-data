@@ -21,7 +21,6 @@ class EndpointTracker(models.Model):
     class Meta:
         verbose_name_plural = "Endpoints"
 
-    
     def __str__(self) -> str:
         return str(self.name)
     
@@ -44,6 +43,9 @@ class Venue(models.Model):
 
     def __str__(self) -> str:
         return str(self.name)
+    
+    class Meta:
+        ordering = ['name']
 
 class Team(models.Model):
     id = models.IntegerField(editable=False, unique=True, 
@@ -59,27 +61,11 @@ class Team(models.Model):
     venue = models.ForeignKey(Venue, null=True, blank=True, on_delete=models.SET_NULL,
                               related_name='teams')
 
+    class Meta:
+        ordering = ['name']
 
     def __str__(self) -> str:
         return str(self.name)
     
-class Player(models.Model):
-    id = models.IntegerField(editable=False, unique=True, 
-                             primary_key=True, blank=False, null=False)
-    name = models.CharField(max_length=64, null=True, blank=True)
-    firstname = models.CharField(max_length=64, null=True, blank=True)
-    lastname = models.CharField(max_length=64, null=True, blank=True)
-    age = models.IntegerField(blank=True, null=True)
-    birth_date = models.DateField(null=True, blank=True)
-    birth_place = models.CharField(max_length=64, blank=True, null=True)
-    country = models.ForeignKey(Country, on_delete=models.SET_NULL, 
-                                null=True, blank=True)
-    nationality = models.ForeignKey(Country, on_delete=models.SET_NULL, 
-                                null=True, blank=True, related_name="players")
-    height = models.CharField(max_length=64, blank=True, null=True)
-    weight = models.CharField(max_length=64, blank=True, null=True)
-    national = models.BooleanField(null=True, blank=True)
-    photo = models.URLField(null=True, blank=True)
-    seasons = models.ManyToManyField(Season, related_name='players')
 
 

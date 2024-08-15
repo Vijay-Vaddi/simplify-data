@@ -11,9 +11,9 @@ headers = {
     'x-rapidapi-host': "api-football-v1.p.rapidapi.com"
 }
 
-def get_response(items_to_fetch):
+def get_response(endpoint, file_name):
        
-    connection.request("GET", items_to_fetch, headers=headers)
+    connection.request("GET", endpoint, headers=headers)
     result = connection.getresponse()
     response_body = result.read()
     # # print('response_body',response_body) 
@@ -24,10 +24,10 @@ def get_response(items_to_fetch):
 
     # # extract reponse part of the data
     response = reponse_dict['response']
-    file_path = os.path.join(os.curdir, 'teams_info')
+    file_path = os.path.join(os.curdir, file_name)
 
     with open(file_path, 'w') as file:
-        json.dump(reponse_dict, file, indent=4)
+        json.dump(response, file, indent=4)
 
     return response
 
