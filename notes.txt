@@ -21,11 +21,24 @@
     -- player statistics by fixture, list of two teams containting list of players and their stats
         -- two teams, all players, all of their stats of that single game. 
         -- some changes to the ones above in the response, 
+        -- considering to save player stats as whole json in db. for that league, or team  
 
     
     === stats has probably been saved per game and calculated during response. 
         -- will ignore stats part for now. 
 
+
     
 
 
+
+
+
+
+
+
+
+
+
+FINAL endpoints: GET All the players, Teams, Countries and Seasons of current day. 
+                 GET all of previous days fixtures and append.  

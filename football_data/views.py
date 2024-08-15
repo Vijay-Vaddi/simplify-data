@@ -30,7 +30,7 @@ def countries(request):
     
     # make new request to endpoint and fetch data
     # if its first request from endpoint or time since last_request > 1
-    countries = get_response(endpoint)
+    countries = get_response(endpoint, 'countries.json')
     
     for country_item in countries:
         name = country_item['name'].replace('-', ' ').title()
@@ -196,7 +196,7 @@ def teams_countries(request):
     
     # make new request to endpoint and fetch data
     # if its first request from endpoint or time since last_request > 1
-    countries = get_response(endpoint)
+    countries = get_response(endpoint, 'teams_countries.json')
     print(countries)
     
     for country_item in countries:

@@ -12,23 +12,7 @@ def get_players_of_a_team(request):
     enpoint_name = 'Player'
     endpoint = "/v3/players/squads?team=33"
 
-    # endpoint_tracker, created = EndpointTracker.objects.get_or_create(
-    #     name=enpoint_name, category=category, endpoint=endpoint
-    # ) 
-
-    # # if endpoint request exists
-    # if not created:
-    #     # and if last request time > 1 day, clear all countries data
-    #     if timezone.now() - endpoint_tracker.last_requested > timedelta(days=1):
-    #         Country.objects.all().delete()
-    #         print('deleting old data')
-    #     else:
-    #         # if last requested time <1 day no need to fetch data
-    #         return HttpResponse('Data upto date')
-    
-    # make new request to endpoint and fetch data
-    # if its first request from endpoint or time since last_request > 1
-    # players = get_response(endpoint,'players_by_squad.json')
+    # add date checking logic to truncate the data. 
 
     squad = load_api_response('players_by_squad.json')[0]
     print(type(squad))
@@ -53,4 +37,48 @@ def get_players_of_a_team(request):
             player_obj.team = team_obj
             player_obj.save()
 
+    return HttpResponse("Players saved")
+
+
+def get_player_stats(request):
+     
+    category = 'Players'
+    enpoint_name = 'Player statistics by league'
+    endpoint = "/v3/players?league=39&season=2020"
+    # endpoint =  "/v3/players?team=33&season=2020"
+    # add date checking logic to truncate the data. 
+
+    # player_league_stats = get_response(endpoint, 'player_league_stats.json')
+    player_league_stats = load_api_response('player_league_stats.json')
+    
+    for player_item in player_league_stats:
+        player = player_item['player']
+        player_stats = player_item['statistics']
+
+        nationality = player.pop('nationality')
+        birth = player.pop('birth')
+
+        if player['id'] is not None:
+            player_obj, created = Player.objects.update_or_create(id=player['id'], 
+                                                                  defaults=player)
+            player_obj.save()
+
+            if nationality is not None:
+                country, created = Country.objects.get_or_create(name=nationality)
+                country.save()
+                player_obj.nationality = country
+                player_obj.save()
+
+            try:
+                if birth is not None:
+                    country = birth.pop('country')
+                    country, created = Country.objects.get_or_create(name=country)
+                    birth_obj, created = Birth.objects.update_or_create(date=birth['date'],
+                                                place=birth['place'],country=country, player=player_obj)
+                    birth_obj.save()
+                else:
+                    print('here', birth)
+            except:
+                print('Something went wrong')
+    
     return HttpResponse("Players saved")

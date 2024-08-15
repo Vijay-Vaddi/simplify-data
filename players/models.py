@@ -18,8 +18,9 @@ class Player(models.Model):
                                 on_delete=models.SET_NULL)
     number = models.IntegerField(null=True, blank=True)
     position = models.CharField(max_length=64, null=True, blank=True)
-    notionality = models.ForeignKey(Country, on_delete=models.SET_NULL, 
+    nationality = models.ForeignKey(Country, on_delete=models.SET_NULL, 
                                 null=True, blank=True, related_name="players")
+    injured = models.BooleanField(null=True, blank=True)
 
     class Meta:
         ordering = ['name']
@@ -28,17 +29,17 @@ class Player(models.Model):
         return str(self.name)
 
 class Birth(models.Model):
-    id = models.IntegerField(primary_key=True, unique=True, editable=False, 
-                             blank=False, null=False)
     date = models.DateField(null=True, blank=True)
     place = models.CharField(max_length=64, blank=True, null=True)
     country = models.ForeignKey(Country, on_delete=models.SET_NULL, 
                                 null=True, blank=True, related_name="birth")
-    player = models.ForeignKey(Player, null=True, blank=True, on_delete=models.SET_NULL,
-                               related_name='birth' )
+    # not considering that a same birthday/time can belong to many players even though 
+    # its possible. So setting one-to-one for simplicity for now. 
+    player = models.OneToOneField(Player, null=True, blank=True, 
+                                  on_delete=models.CASCADE)
 
     class Meta:
-        ordering = ['player']
+        ordering = ['date']
 
     def __str__(self) -> str:
-        return  str(self.name)
+        return  str(self.date)

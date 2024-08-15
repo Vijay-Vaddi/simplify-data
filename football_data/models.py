@@ -1,10 +1,9 @@
 from django.db import models
 
 class Country(models.Model):
+    name = models.CharField(max_length=64, null=True, blank=True, unique=True)
     code = models.CharField(max_length=10, null=True, blank=True)
     flag = models.URLField(null=True, blank=True)
-    name = models.CharField(max_length=64, null=True, blank=True, unique=True)
-
     class Meta:
         verbose_name_plural = "Countries"
         ordering = ['name']

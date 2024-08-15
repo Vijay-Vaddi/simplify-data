@@ -36,5 +36,4 @@ def load_api_response(file_name='teams_info.json'):
     null = None
     if file_path.exists():
         with open(file_path, 'r') as file:
-            print('here',file)
             return json.load(file)
