@@ -15,25 +15,18 @@ def get_players_of_a_team(request):
     # add date checking logic to truncate the data. 
 
     squad = load_api_response('players_by_squad.json')[0]
-    print(type(squad))
 
     team = squad['team']
     players = squad['players']    
 
     team_obj, created = Team.objects.update_or_create(id=team['id'],
-                                                name = team['name'],
-                                                logo = team['logo'])
+                                                defaults=team)
     team_obj.save()
-
 
     for player in players:
         if player['id'] is not None:
             player_obj, created = Player.objects.update_or_create(id=player['id'],
-                                name = player['name'], 
-                                age = player['age'], 
-                                number = player['number'] ,
-                                position = player['position'], 
-                                photo = player['photo']) 
+                                defaults=player) 
             player_obj.team = team_obj
             player_obj.save()
 
@@ -44,12 +37,12 @@ def get_player_stats(request):
      
     category = 'Players'
     enpoint_name = 'Player statistics by league'
-    endpoint = "/v3/players?league=39&season=2020"
-    # endpoint =  "/v3/players?team=33&season=2020"
+    # endpoint = "/v3/players?league=39&season=2020"
+    endpoint =  "/v3/players?team=33&season=2020"
     # add date checking logic to truncate the data. 
 
-    # player_league_stats = get_response(endpoint, 'player_league_stats.json')
-    player_league_stats = load_api_response('player_league_stats.json')
+    player_league_stats = get_response(endpoint, 'player_team_stats.json')
+    player_league_stats = load_api_response('player_team_stats.json')
     
     for player_item in player_league_stats:
         player = player_item['player']

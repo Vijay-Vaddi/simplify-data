@@ -27,8 +27,10 @@
     === stats has probably been saved per game and calculated during response. 
         -- will ignore stats part for now. 
 
+view - get_player_stats
+    saved from both endpoints ignoring stats. 
 
-    
+
 
 
 
