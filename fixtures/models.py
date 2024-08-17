@@ -29,7 +29,7 @@ class Fixture(models.Model):
         ordering = ['date']
 
     def __str__(self) -> str:
-        return str(self.date)
+        return f"{self.home_team.name} - vs - {self.away_team.name}"
     
 class Status(models.Model):
     long = models.CharField(max_length=16, null=True, blank=True)
@@ -41,7 +41,7 @@ class Status(models.Model):
         ordering = ['long']
     
     def __str__(self) -> str:
-        return self.long
+        return str(self.long)
 
 
 class Periods(models.Model): 
@@ -50,6 +50,9 @@ class Periods(models.Model):
 
     class Meta:
         verbose_name_plural = "Periods"
+    
+    def __str__(self) -> str:
+        return str(self.first)
 
 
 class League(models.Model):
@@ -60,8 +63,12 @@ class League(models.Model):
                                 related_name='leagues', on_delete=models.SET_NULL)
     logo = models.URLField(null=True, blank=True, max_length=128) 
     flag = models.URLField(null=True, blank=True, max_length=128)
-    # season          
+    season = models.IntegerField(null=True, blank=True)          
     round = models.CharField(max_length=64, null=True, blank=True)
+
+    def __str__(self) -> str:
+        return str(self.name)
+    
 
 
 class Score(models.Model):
@@ -74,7 +81,10 @@ class Score(models.Model):
     extratime = models.ForeignKey('Goal', null=True, blank=True,
                                 related_name='extra_time', on_delete=models.SET_NULL)
     
- 
+    
 class Goal(models.Model):
     home = models.IntegerField(null=True, blank=True)
     away = models.IntegerField(null=True, blank=True)
+
+    def __str__(self) -> str:
+        return str((self.home, self.away))

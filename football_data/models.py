@@ -29,6 +29,8 @@ class Season(models.Model):
     def __str__(self):
         return str(self.year)
 
+    class Meta:
+        ordering = ['year']
 
 class Venue(models.Model):
     venue_id = models.IntegerField(null=True, blank=True)
@@ -45,10 +47,6 @@ class Venue(models.Model):
     class Meta:
         ordering = ['name']
 
-        # constrints = [
-        #         models.UniqueConstraint(fields=['name', 'city'],
-        #                                 name='unique_venue')
-        # ]
 
 class Team(models.Model):
     id = models.IntegerField(editable=False, unique=True, 
