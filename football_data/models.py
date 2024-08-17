@@ -4,6 +4,7 @@ class Country(models.Model):
     name = models.CharField(max_length=64, null=True, blank=True, unique=True)
     code = models.CharField(max_length=10, null=True, blank=True)
     flag = models.URLField(null=True, blank=True)
+    
     class Meta:
         verbose_name_plural = "Countries"
         ordering = ['name']
@@ -24,7 +25,7 @@ class EndpointTracker(models.Model):
         return str(self.name)
     
 class Season(models.Model):
-    year = models.IntegerField(editable=False, unique=True)
+    year = models.IntegerField(editable=False, unique=True, null=True, blank=True)
     
     def __str__(self):
         return str(self.year)

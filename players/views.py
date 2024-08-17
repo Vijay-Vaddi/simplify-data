@@ -13,7 +13,6 @@ def get_players_of_a_team(request):
     endpoint = "/v3/players/squads?team=33"
 
     # add date checking logic to truncate the data. 
-
     squad = load_api_response('players_by_squad.json')[0]
 
     team = squad['team']
@@ -21,7 +20,6 @@ def get_players_of_a_team(request):
 
     team_obj, created = Team.objects.update_or_create(id=team['id'],
                                                 defaults=team)
-    team_obj.save()
 
     for player in players:
         if player['id'] is not None:
@@ -41,7 +39,7 @@ def get_player_stats(request):
     endpoint =  "/v3/players?team=33&season=2020"
     # add date checking logic to truncate the data. 
 
-    player_league_stats = get_response(endpoint, 'player_team_stats.json')
+    # player_league_stats = get_response(endpoint, 'player_team_stats.json')
     player_league_stats = load_api_response('player_team_stats.json')
     
     for player_item in player_league_stats:
@@ -54,11 +52,9 @@ def get_player_stats(request):
         if player['id'] is not None:
             player_obj, created = Player.objects.update_or_create(id=player['id'], 
                                                                   defaults=player)
-            player_obj.save()
-
+            
             if nationality is not None:
                 country, created = Country.objects.get_or_create(name=nationality)
-                country.save()
                 player_obj.nationality = country
                 player_obj.save()
 
@@ -67,7 +63,7 @@ def get_player_stats(request):
                     country = birth.pop('country')
                     country, created = Country.objects.get_or_create(name=country)
                     birth_obj, created = Birth.objects.update_or_create(date=birth['date'],
-                                                place=birth['place'],country=country, player=player_obj)
+                                                place=birth['place'], country=country, player=player_obj)
                     birth_obj.save()
                 else:
                     print('here', birth)
