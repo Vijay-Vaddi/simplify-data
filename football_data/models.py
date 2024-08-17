@@ -31,8 +31,7 @@ class Season(models.Model):
 
 
 class Venue(models.Model):
-    id = models.IntegerField(editable=False, unique=True, 
-                             primary_key=True, blank=False, null=False)
+    venue_id = models.IntegerField(null=True, blank=True)
     name = models.CharField(max_length=64, null=True, blank=True)
     address = models.CharField(max_length=128, null=True, blank=True)
     city = models.CharField(max_length=64, null=True, blank=True)
@@ -45,6 +44,11 @@ class Venue(models.Model):
     
     class Meta:
         ordering = ['name']
+
+        # constrints = [
+        #         models.UniqueConstraint(fields=['name', 'city'],
+        #                                 name='unique_venue')
+        # ]
 
 class Team(models.Model):
     id = models.IntegerField(editable=False, unique=True, 

@@ -26,6 +26,7 @@ Null values in venue id is not letting save data as django doesnt let that,
 Team name unique constraint failed. 
 =====
 	team ID is unique as per docs so removed unique name option
+	
 
 
 

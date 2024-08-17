@@ -31,8 +31,14 @@ view - get_player_stats
     saved from both endpoints ignoring stats. 
 
 
+Fixtures: 
+    goals {} total seems to be calculated so will ignore storing. 
+    creating tables for scores, fixture, goals, status 
+    team winner seem to be calculated so will ignore it while saving
 
-
+    venue : 
+        some venue ids are null, so have to modify venue obj
+        
 
 
 
