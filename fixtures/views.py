@@ -18,36 +18,31 @@ def get_fixture_by_date(request):
 
         # pop and save periods
         periods = fixture.pop('periods')
-        period_obj, created = Periods.objects.update_or_create(first=periods['first'],
+        period_obj, _ = Periods.objects.update_or_create(first=periods['first'],
                                                            second=periods['second'])
-        period_obj.save()
 
         # pop and save venue
         venue = fixture.pop('venue')
         if venue['id'] is not None:
             print(venue)
-            venue_obj, created = Venue.objects.update_or_create(venue_id=venue['id'], defaults=venue)
-            venue_obj.save()
+            venue_obj, _ = Venue.objects.update_or_create(venue_id=venue['id'], defaults=venue)
         else:
-            venue_obj, created = Venue.objects.update_or_create(name=venue['name'], 
+            venue_obj, _ = Venue.objects.update_or_create(name=venue['name'], 
                                                              city=venue['city'])
-            venue_obj.save()
         
         # pop and save status
         status = fixture.pop('status')
-        status_obj, created = Status.objects.update_or_create(long=status['long'],
+        status_obj, _ = Status.objects.update_or_create(long=status['long'],
                                                           short=status['short'],
                                                           elapsed=status['elapsed'])
-        status_obj.save()
 
         # save league 
         league = fixture_item['league']
         country = league.pop('country')
 
-        country_obj, created = Country.objects.update_or_create(name=country)
-        league_obj, created = League.objects.update_or_create(id=league['id'], 
+        country_obj, _ = Country.objects.update_or_create(name=country)
+        league_obj, _ = League.objects.update_or_create(id=league['id'], 
                                                               country=country_obj, defaults=league)
-        league_obj.save()
 
         #save teams
         teams = fixture_item['teams']
@@ -55,19 +50,24 @@ def get_fixture_by_date(request):
         home_team.pop('winner')
         away_team.pop('winner')
 
-        home_team_obj, created = Team.objects.update_or_create(id=home_team['id'], defaults=home_team)
-        away_team_obj, created = Team.objects.update_or_create(id=away_team['id'], defaults=away_team)
-        home_team_obj.save()
-        away_team_obj.save()
+        home_team_obj, _ = Team.objects.update_or_create(id=home_team['id'], defaults=home_team)
+        away_team_obj, _ = Team.objects.update_or_create(id=away_team['id'], defaults=away_team)
+        
+        # saved fixture goals
+        scores = fixture_item['score']
+        half_time, _ = Goal.objects.update_or_create(home=scores['halftime']['home'], away=scores['halftime']['away'])
+        full_time, _ = Goal.objects.update_or_create(home=scores['fulltime']['home'], away=scores['fulltime']['away'])
+        penalty, _ = Goal.objects.update_or_create(home=scores['penalty']['home'], away=scores['penalty']['away'])
+        extratime, _ = Goal.objects.update_or_create(home=scores['extratime']['home'], away=scores['extratime']['away'])
+        
+        scores_obj, _ = Score.objects.update_or_create(half_time=half_time, full_time=full_time,
+                                                    penalty=penalty, extratime=extratime)
 
-
-        fixture_obj, created = Fixture.objects.update_or_create(id=fixture['id'], 
+        fixture_obj, _ = Fixture.objects.update_or_create(id=fixture['id'], 
                                                 defaults={**fixture, 'periods':period_obj, 
                                                 'status':status_obj, 'venue':venue_obj, 
                                                 'league':league_obj, 'home_team':home_team_obj,
-                                                'away_team':away_team_obj})
+                                                'away_team':away_team_obj, 'score':scores_obj})
 
-
-        fixture_obj.save()
 
     return HttpResponse('Fixtures saved')

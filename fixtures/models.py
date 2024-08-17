@@ -21,9 +21,12 @@ class Fixture(models.Model):
     periods = models.ForeignKey('Periods', on_delete=models.SET_NULL, 
                                null=True, blank=True, related_name='fixtures')
     home_team = models.ForeignKey(Team, on_delete=models.SET_NULL, 
-                               null=True, blank=True, related_name='fixtures_home' )
+                               null=True, blank=True, related_name='fixtures_home')
     away_team = models.ForeignKey(Team, on_delete=models.SET_NULL, 
-                               null=True, blank=True, related_name='fixtures_away' )
+                               null=True, blank=True, related_name='fixtures_away')
+    
+    score = models.ForeignKey('Score', on_delete=models.SET_NULL, 
+                               null=True, blank=True, related_name='fixtures_score')
 
     class Meta:
         ordering = ['date']
@@ -82,6 +85,10 @@ class Score(models.Model):
                                 related_name='extra_time', on_delete=models.SET_NULL)
     
     
+    def __str__(self) -> str:
+        return f"HT: {self.half_time}, FT: {self.full_time}, Pen: {self.penalty}, Extra: {self.extratime}" 
+
+
 class Goal(models.Model):
     home = models.IntegerField(null=True, blank=True)
     away = models.IntegerField(null=True, blank=True)
