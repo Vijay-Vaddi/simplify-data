@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from football_data.get_response import get_response, load_api_response
-from .models import Fixture, League, Score, Goal, Periods, Status, Country, Team
-from football_data.models import Venue
+from football_data.utils import get_response, load_api_response
+from .models import Fixture, League, Score, Goal, Periods, Status, Country
+from teams.models import Team, Venue
 
 # Create your views here.
 
@@ -24,7 +24,6 @@ def get_fixture_by_date(request):
         # pop and save venue
         venue = fixture.pop('venue')
         if venue['id'] is not None:
-            print(venue)
             venue_obj, _ = Venue.objects.update_or_create(venue_id=venue['id'], defaults=venue)
         else:
             venue_obj, _ = Venue.objects.update_or_create(name=venue['name'], 

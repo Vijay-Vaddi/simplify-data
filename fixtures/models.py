@@ -1,5 +1,6 @@
 from django.db import models
-from football_data.models import Venue, Team, Country, Season
+from football_data.models import Country
+from teams.models import Venue, Team
 
 
 class Fixture(models.Model):
@@ -72,6 +73,8 @@ class League(models.Model):
     def __str__(self) -> str:
         return str(self.name)
     
+    class Meta:
+        ordering = ['name']
 
 
 class Score(models.Model):

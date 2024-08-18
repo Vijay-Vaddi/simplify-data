@@ -1,3 +1,7 @@
+from .models import EndpointTracker
+from datetime import timedelta
+from django.utils import timezone
+
 import http.client
 import api_key
 import json
@@ -37,3 +41,17 @@ def load_api_response(file_name='teams_info.json'):
     if file_path.exists():
         with open(file_path, 'r') as file:
             return json.load(file)
+        
+def time_to_fetch(category, endpoint_name, endpoint): 
+    
+    endpoint_tracker, created = EndpointTracker.objects.get_or_create(
+            name=endpoint_name, category=category, endpoint=endpoint) 
+    # if endpoint request exists
+    
+    if not created:
+        # and if last request time > 1 day, clear all countries data
+        if timezone.now() - endpoint_tracker.last_requested > timedelta(days=1):  
+            return True
+        else:
+            return False
+    return True

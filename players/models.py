@@ -1,5 +1,6 @@
 from django.db import models
-from football_data.models import Country, Season, Team
+from football_data.models import Country, Season
+from teams.models import Team
 
 class Player(models.Model):
     id = models.IntegerField(editable=False, unique=True, 

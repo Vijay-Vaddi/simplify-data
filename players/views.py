@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from football_data.get_response import get_response, load_api_response
-from football_data.models import EndpointTracker, Country, Season, Team 
+from football_data.utils import get_response, load_api_response
+from football_data.models import EndpointTracker, Country, Season
+from teams.models import Team, Venue
 from datetime import timedelta
 from django.utils import timezone
 from .models import Player, Birth
