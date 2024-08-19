@@ -1,10 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from football_data.utils import get_response, load_api_response
-from football_data.models import EndpointTracker, Country, Season
-from teams.models import Team, Venue
-from datetime import timedelta
-from django.utils import timezone
+from football_data.utils import get_response, load_api_response, time_to_fetch
+from football_data.models import Country
+from teams.models import Team
 from .models import Player, Birth
 
 def get_players_of_a_team(request):
@@ -12,6 +10,11 @@ def get_players_of_a_team(request):
     category = 'Players'
     enpoint_name = 'Player'
     endpoint = "/v3/players/squads?team=33"
+
+    if time_to_fetch(category, enpoint_name, endpoint):
+        Country.objects.all().delete()
+    else:
+        return HttpResponse('Items up to date')
 
     # add date checking logic to truncate the data. 
     squad = load_api_response('players_by_squad.json')[0]
@@ -39,6 +42,11 @@ def get_player_stats(request):
     # endpoint = "/v3/players?league=39&season=2020"
     endpoint =  "/v3/players?team=33&season=2020"
     # add date checking logic to truncate the data. 
+
+    if time_to_fetch(category, enpoint_name, endpoint):
+        Country.objects.all().delete()
+    else:
+        return HttpResponse('Items up to date')
 
     # player_league_stats = get_response(endpoint, 'player_team_stats.json')
     player_league_stats = load_api_response('player_team_stats.json')

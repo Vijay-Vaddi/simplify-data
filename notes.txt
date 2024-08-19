@@ -37,7 +37,7 @@ Fixtures:
     team winner seem to be calculated so will ignore it while saving
 
     venue : 
-        some venue ids are null, so have to modify venue obj
+        some venue ids are null, so have to modify venue class's venue_id
         
 
 

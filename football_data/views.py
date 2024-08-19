@@ -4,6 +4,13 @@ from .utils import get_response, load_api_response, time_to_fetch
 from .models import Country, Season 
 
 def index(request):
+    # send an async requet here for once a day or once an hour. 
+
+    # call views from here to check if its to fetch new data and update
+    # pass request object. 
+    # return update status. 
+    
+
     return HttpResponse("Hello, the app is working")
 
 def countries(request):
@@ -20,7 +27,7 @@ def countries(request):
     # countries = get_response(endpoint, 'countries.json')
     countries = load_api_response('countries.json')
 
-    if save_coutries(countries):
+    if save_countries(countries):
         return HttpResponse("Countries saved")
     else:
         return HttpResponse('Something went wrong')
@@ -30,6 +37,10 @@ def seasons(request):
     enpoint_name = 'Seasons'
     endpoint = "/v3/leagues/seasons"
     
+    if time_to_fetch(category, enpoint_name, endpoint):
+        Season.objects.all().delete()
+    else:
+        return HttpResponse('Items up to date')
     seasons = get_response(endpoint)
     
     for season in seasons:  
@@ -37,7 +48,7 @@ def seasons(request):
 
     return HttpResponse('Seasons endpoint')
 
-def save_coutries(countries):
+def save_countries(countries):
     try:
         for country_item in countries:
             name = country_item['name'].replace('-', ' ').title()

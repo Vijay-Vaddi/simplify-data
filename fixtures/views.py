@@ -41,7 +41,7 @@ def get_fixture_by_date(request):
 
         country_obj, _ = Country.objects.update_or_create(name=country)
         league_obj, _ = League.objects.update_or_create(id=league['id'], 
-                                                              country=country_obj, defaults=league)
+                                                        country=country_obj, defaults=league)
 
         #save teams
         teams = fixture_item['teams']
@@ -54,10 +54,14 @@ def get_fixture_by_date(request):
         
         # saved fixture goals
         scores = fixture_item['score']
-        half_time, _ = Goal.objects.update_or_create(home=scores['halftime']['home'], away=scores['halftime']['away'])
-        full_time, _ = Goal.objects.update_or_create(home=scores['fulltime']['home'], away=scores['fulltime']['away'])
-        penalty, _ = Goal.objects.update_or_create(home=scores['penalty']['home'], away=scores['penalty']['away'])
-        extratime, _ = Goal.objects.update_or_create(home=scores['extratime']['home'], away=scores['extratime']['away'])
+        half_time, _ = Goal.objects.update_or_create(home=scores['halftime']['home'], 
+                                                     away=scores['halftime']['away'])
+        full_time, _ = Goal.objects.update_or_create(home=scores['fulltime']['home'], 
+                                                     away=scores['fulltime']['away'])
+        penalty, _ = Goal.objects.update_or_create(home=scores['penalty']['home'],
+                                                      away=scores['penalty']['away'])
+        extratime, _ = Goal.objects.update_or_create(home=scores['extratime']['home'], 
+                                                     away=scores['extratime']['away'])
         
         scores_obj, _ = Score.objects.update_or_create(half_time=half_time, full_time=full_time,
                                                     penalty=penalty, extratime=extratime)
