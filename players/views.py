@@ -8,10 +8,10 @@ from .models import Player, Birth
 def get_players_of_a_team(request):
      
     category = 'Players'
-    enpoint_name = 'Player'
+    endpoint_name = 'Player'
     endpoint = "/v3/players/squads?team=33"
 
-    if time_to_fetch(category, enpoint_name, endpoint):
+    if time_to_fetch(category, endpoint_name, endpoint):
         Country.objects.all().delete()
     else:
         return HttpResponse('Items up to date')

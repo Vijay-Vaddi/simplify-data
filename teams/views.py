@@ -1,16 +1,15 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from football_data.utils import get_response, load_api_response, time_to_fetch
+from football_data.utils import get_response, load_api_response, time_to_fetch, save_countries
 from .models import Venue, Team
 from football_data.models import Country, Season
-from football_data.views import save_countries
 
 def team_info(request):
     category = 'Teams'
-    enpoint_name = 'Teams Information'
+    endpoint_name = 'Teams Information'
     endpoint = "/v3/teams?country=Germany"
 
-    if time_to_fetch(category, enpoint_name, endpoint):
+    if time_to_fetch(category, endpoint_name, endpoint):
         Team.objects.all().delete()
     else:
         return HttpResponse('Items up to date')

@@ -1,6 +1,7 @@
 from .models import EndpointTracker
 from datetime import timedelta
 from django.utils import timezone
+from .models import Country
 
 import http.client
 import api_key
@@ -46,12 +47,29 @@ def time_to_fetch(category, endpoint_name, endpoint):
     
     endpoint_tracker, created = EndpointTracker.objects.get_or_create(
             name=endpoint_name, category=category, endpoint=endpoint) 
-    # if endpoint request exists
     
-    if not created:
-        # and if last request time > 1 day, clear all countries data
-        if timezone.now() - endpoint_tracker.last_requested > timedelta(days=1):  
+    # new request
+    if created:
+        return True
+    # if endpoint request exists
+    # and if last request time > 1 day, clear all countries data
+    if timezone.now() - endpoint_tracker.last_requested > timedelta(days=1):  
             return True
-        else:
-            return False
-    return True
+
+    return False
+
+def save_countries(countries):
+    try:
+        for country_item in countries:
+            name = country_item['name'].replace('-', ' ').title()
+            country, created = Country.objects.get_or_create(name=name)
+            
+            # to ensure current data not replaced by Null or ''
+            if country_item['code']:
+                country.code = country_item['code'] 
+            if country_item['flag']:
+                country.flag = country_item['flag']
+            country.save()
+    except:
+        return False
+    return True    

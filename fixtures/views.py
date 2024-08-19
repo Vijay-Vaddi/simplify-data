@@ -1,16 +1,22 @@
-from django.shortcuts import render
 from django.http import HttpResponse
-from football_data.utils import get_response, load_api_response
+from football_data.utils import get_response, load_api_response, time_to_fetch
 from .models import Fixture, League, Score, Goal, Periods, Status, Country
 from teams.models import Team, Venue
 
 # Create your views here.
 
 def get_fixture_by_date(request):
-    
-    endpoint = "/v3/fixtures?date=2024-08-15"
+    endpoint_name = "Fixture by date"
+    category = "Fixtures"    
+    endpoint = "/v3/fixtures?date=2024-08-20"
 
-    # response = get_response(endpoint, "fixtures_by_date.json")
+    if time_to_fetch(category, endpoint_name, endpoint):
+        # Since fixture items need to be appended, db tables can stay as is.
+        pass
+    else:
+        return HttpResponse('Items up to date')
+    
+    fixtures = get_response(endpoint, "fixtures_by_date.json")
     fixtures = load_api_response("fixtures_by_date.json")
 
     for fixture_item in fixtures:
