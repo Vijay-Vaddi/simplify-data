@@ -24,7 +24,6 @@
 	first call to get all countries 
 	use countries in table countries to get all teams/venue
 	use team.id in all teams to fetch all players
-	use player id to fetch all players info 
 
 9. Truncation and appending
 	UNSURE of the best approach weather to use task scheduler or something simple. 

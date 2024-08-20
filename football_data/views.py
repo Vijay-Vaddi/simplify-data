@@ -56,7 +56,6 @@ def countries(request):
     # if its first request from endpoint or time since last_request > 1
     # countries = get_response(endpoint, 'countries.json')
     countries = load_api_response('countries.json')
-    print(countries)
     if save_countries(countries):
         return JsonResponse({"message":"Countries saved"})
     else:

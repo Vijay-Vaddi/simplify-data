@@ -4,8 +4,10 @@ from football_data.utils import get_response, load_api_response, time_to_fetch
 from football_data.models import Country
 from teams.models import Team
 from .models import Player, Birth
+import json
+from django.contrib import messages
 
-def get_players_of_a_team(request):
+def get_players_of_a_team(request, team=None):
     # check if team item is passed in url
     if 'team' in request.GET:
         team_id=str(request.GET['team'])
@@ -22,9 +24,12 @@ def get_players_of_a_team(request):
     else:
         return JsonResponse({'message':'Items up to date'})
 
+    try:
     # add date checking logic to truncate the data. 
-    squad = load_api_response('players_by_squad.json')[0]
-
+        squad = load_api_response('players_by_squad.json')[0]
+    except Exception as e:
+        return JsonResponse({'message':f"Squad for team with ID: {team_id} could not be fetched"})
+    
     team = squad['team']
     players = squad['players']    
 
@@ -86,3 +91,18 @@ def get_player_stats(request):
                 print('Something went wrong', e)
     
     return JsonResponse({'message':"Players saved"})
+
+
+def get_all_players(request):
+    '''Get all the teams from teams table
+    pass to get_players of a team one by one and save players
+    '''
+    teams = Team.objects.all()
+
+    for team in teams:
+        response = get_players_of_a_team(request, team=team.id)
+        response_data = json.loads(response.content)
+        message = response_data.get('message')
+        messages.success(request, message)
+    
+    return JsonResponse({'message':'All players available for all teams fetched'})
