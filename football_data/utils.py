@@ -30,7 +30,11 @@ def get_response(endpoint, file_name):
 
     # # extract reponse part of the data
     response = reponse_dict['response']
-    file_path = os.path.join(os.curdir, file_name)
+    
+    directory = os.path.join(os.curdir, 'json_responses')
+    os.makedirs(directory, exist_ok=True)
+
+    file_path = os.path.join(directory, file_name)
 
     with open(file_path, 'w') as file:
         json.dump(response, file, indent=4)
@@ -38,8 +42,8 @@ def get_response(endpoint, file_name):
     return response
 
 def load_api_response(file_name='teams_info.json'):
-    file_path = Path('.') / file_name
-    null = None
+    file_path = Path('.') / 'json_responses'/ file_name
+    # null = None
     if file_path.exists():
         with open(file_path, 'r') as file:
             return json.load(file)

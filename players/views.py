@@ -6,10 +6,16 @@ from teams.models import Team
 from .models import Player, Birth
 
 def get_players_of_a_team(request):
-     
+    # check if team item is passed in url
+    if 'team' in request.GET:
+        team_id=str(request.GET['team'])
+    else:
+        # default team MANU
+        team_id = str(33)  
+    
     category = 'Players'
     endpoint_name = 'Player'
-    endpoint = "/v3/players/squads?team=33"
+    endpoint = "/v3/players/squads?team="+team_id
 
     if time_to_fetch(category, endpoint_name, endpoint):
         Player.objects.all().delete()
@@ -36,8 +42,7 @@ def get_players_of_a_team(request):
 
 
 def get_player_stats(request):
-    #stats ignore from both endpoints but only player info is saved
-     
+    #ignore stats from both endpoints but only player info is saved
     category = 'Players'
     enpoint_name = 'Player statistics by league'
     # endpoint = "/v3/players?league=39&season=2020"

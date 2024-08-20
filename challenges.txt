@@ -1,32 +1,40 @@
-Date time value issues, 
-Time zone issues, offset aware/offset naive 
--- used DateTimeField and timezone instead
+1. 1st attempt at saving in CSV had issues of managing table data relationship
+	- so decided to use django's ORM and sqlite db
+2. Date time value issues, 
+	Time zone issues, offset aware/offset naive 
+	used DateTimeField and timezone instead
 
-when trying to save countries from teams, country name with hyphens are saving as duplicates
+3. when trying to save countries from teams, country name with hyphens are saving as duplicates
+    added name = country_item['name'].replace('-', ' ').title() to avoid duplicates 
 
-other issues 
-	Antigua And Barbuda
-	Antigua and Barbuda
-
-    Bosnia
-	Bosnia Herzegovina
-	Bosnia and Herzegovina
-
-    added name = country_item['name'].replace('-', ' ').title()
-	logic to avoid duplicates 
-
-
-Non String type values returned, 
-countries unique contraints failed even though searched by countryname, for eg "England"
-Null values in venue id is not letting save data as django doesnt let that, 
+4. Non String type values returned, using utf-8 solved this. 
+5. countries unique contraints failed even though searched by countryname, for eg "England"
+	so searched only with names first and then proceed if found or create
+6. Null values in venue id is not letting save data as django doesnt let null in primary key, 
 	either allow null = true in models or skip team/venue items with null id in venue 
-	skipped linked team to venue if venue is null. 
+	skipped linking team to venue if venue is null. 
 
--------
-Team name unique constraint failed. 
-=====
-	team ID is unique as per docs so removed unique name option
+7. Team name unique constraint failed. 
+	wrong usage of update_or_create/get_or_create, 
+	pass only one item and then pass remaining values as defaults, 
+	pop relationship items   
+	also team ID is unique as per docs so removed unique name option
+
+8. GET ALL PLAYERS, GET ALL COUNTRIES AND GET ALL TEAMS 
+	first call to get all countries 
+	use countries in table countries to get all teams/venue
+	use team.id in all teams to fetch all players
+	use player id to fetch all players info 
+
+9. Truncation and appending
+	UNSURE of the best approach weather to use task scheduler or something simple. 
+	used endpoint_tracker to check when the last enpoint was called 
+	if last call was > 1 day 
+		then objects.all.delete for clearing table and refetch for Teams, players, countries, Seasons
+		adding new data to Fixtures with no distint append operation as django table gets updated by default 
 	
+
+
 
 
 

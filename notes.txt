@@ -2,43 +2,30 @@
 2. on each request, the countries are being appended with same values 
     -- so adding a 'last requested date_time' variables to keep track
     -- and only update if the time is 24hr+
-
-3. Git test
-4. saved teams informaition
+3. saved teams informaition
 5. Save players data for now while ignoring stats. 
-    player squads - returns team and players always. 
-    if searched by team returns all players, 
-    if searched by player returns all teams for that player
-    started new app players for code seperation
-
-    --Will ignore Players seasons and seasons by player_id endpoints for now
-
+    
     player statistics team_id - list containing list of players with birth and list their statistics( list of items) of that team 
     player statistics by league - list of players with birth, and list of their statistics (1 item) of that league     
-
-        == both can be combined into one view. 
+    == both can be combined into one view. 
     
     -- player statistics by fixture, list of two teams containting list of players and their stats
         -- two teams, all players, all of their stats of that single game. 
         -- some changes to the ones above in the response, 
         -- considering to save player stats as whole json in db. for that league, or team  
-
-    
-    === stats has probably been saved per game and calculated during response. 
+    --- stats has probably been saved per game and calculated during response. 
         -- will ignore stats part for now. 
 
-view - get_player_stats
-    saved from both endpoints ignoring stats. 
-
-
-Fixtures: 
+6.Fixtures: 
     goals {} total seems to be calculated so will ignore storing. 
     creating tables for scores, fixture, goals, status 
     team winner seem to be calculated so will ignore it while saving
 
     venue : 
         some venue ids are null, so have to modify venue class's venue_id
-        
+
+7. For regular checks added async call from front end using js to index() 
+    --- and called other endpoints from inside index     
 
 
 

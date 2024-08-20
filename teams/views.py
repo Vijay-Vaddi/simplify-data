@@ -10,14 +10,21 @@ from football_data.models import Country, Season
 # from ALL teams, ALL players can be fetched using get_players_of_team. 
 
 def team_info(request):
+    # check if country item is passed in url
+    if 'country' in request.GET:
+        country=request.GET['country']
+    else:
+        # default country
+        country = 'England' 
+
     category = 'Teams'
     endpoint_name = 'Teams Information'
-    endpoint = "/v3/teams?country=Germany"
+    endpoint = "/v3/teams?country="+country
 
     if time_to_fetch(category, endpoint_name, endpoint):
         Team.objects.all().delete()
     else:
-        return HttpResponse('Items up to date')
+        return JsonResponse({'message':'Items up to date'})
 
     # team_response = get_response(endpoint,'teams_info.json')
     team_response= load_api_response('teams_info.json')
