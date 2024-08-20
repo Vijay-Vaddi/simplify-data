@@ -19,47 +19,39 @@ def index(request):
     message = response_data.get('message')
     messages.success(request, message)
 
-    seasons_response = seasons(request)
-    response_data = json.loads(seasons_response.content)
-    message = response_data.get('message')
-    messages.success(request, message)
-
-    team_info = team_info(request)
-    response_data = json.loads(team_info.content)
-    message = response_data.get('message')
-    messages.success(request, message)
-
-    teams_countries_message = teams_countries(request)
-    response_data = json.loads(teams_countries_message.content)
-    message = response_data.get('message')
-    messages.success(request, message)
-
-    get_squad_message = get_players_of_a_team(request)
-    response_data = json.loads(get_squad_message.content)
-    message = response_data.get('message')
-    messages.success(request, message)
-
-    get_player_message = get_player_stats(request)
-    response_data = json.loads(get_player_message.content)
-    message = response_data.get('message')
-    messages.success(request, message)
-
+    # regular checking for fixture update 
     fixture_message = get_fixture_by_date(request)
     response_data=json.loads(fixture_message.content)
     message = response_data.get('message')
     messages.success(request, message)
-    
-    return render(request, 'index.html') 
-    # return HttpResponse("Hello, the app is working")
 
+    # regular checking for players of a single team
+    players_of_team = get_players_of_a_team(request)
+    response_data = json.loads(players_of_team.content)
+    message = response_data.get('message')
+    messages.success(request, message)
+    
+    # regular checking for teams in a country
+    team_venue = team_info(request)
+    response_data = json.loads(team_venue.content)
+    message = response_data.get('message')
+    messages.success(request, message)
+
+    # can call other endpoints from here to check for updates 
+    # or let the endpoints be called manually 
+
+    return render(request, 'index.html') 
+    
 def countries(request):
     category = 'Countries and Seasons'
     endpoint_name = 'Countries'
     endpoint = "/v3/countries"
-    if time_to_fetch(category, endpoint_name, endpoint):
+
+    if time_to_fetch(category=category, endpoint=endpoint, endpoint_name=endpoint_name):
+        # if one day passed, delete items in table and fetch anew
         Country.objects.all().delete()
     else:
-        return JsonResponse({'message':'Items up to date'})
+        return JsonResponse({'message':'Countries up to date'})
     
     # if its first request from endpoint or time since last_request > 1
     # countries = get_response(endpoint, 'countries.json')
@@ -78,13 +70,13 @@ def seasons(request):
     if time_to_fetch(category, enpoint_name, endpoint):
         Season.objects.all().delete()
     else:
-        return HttpResponse('Items up to date')
+        return JsonResponse({'message':'Items up to date'})
     seasons = get_response(endpoint, 'countries_seasons.json')
     
     for season in seasons:  
         season = Season.objects.get_or_create(year=season)
 
-    return JsonResponse({"message":"Countries saved"})
+    return JsonResponse({"message":"Seasons saved"})
 
 
 

@@ -1,8 +1,13 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from football_data.utils import get_response, load_api_response, time_to_fetch, save_countries
 from .models import Venue, Team
 from football_data.models import Country, Season
+
+# get all teams information from a country
+# if ALL teams information to be fetched, first fetch all countries from teams_countries 
+# and then pass to teams_info
+# from ALL teams, ALL players can be fetched using get_players_of_team. 
 
 def team_info(request):
     category = 'Teams'
@@ -44,7 +49,7 @@ def team_info(request):
         team_obj.__dict__.update(team_defaults)
         team_obj.save()
     
-    return HttpResponse('Team and venue info updated')
+    return JsonResponse({'message':'Team and venue info updated'})
 
 def team_seasons(request):
     category = 'Teams'
@@ -54,7 +59,7 @@ def team_seasons(request):
     if time_to_fetch(category, enpoint_name, endpoint):
         Season.objects.all().delete()
     else:
-        return HttpResponse('Items up to date')
+        return JsonResponse({'message':'Items up to date'})
     
     team_id = 33
     team_seasons = get_response(endpoint)
@@ -65,7 +70,7 @@ def team_seasons(request):
     
     team.save()
 
-    return HttpResponse('Teams seasons saved')
+    return JsonResponse({'message':'Teams seasons saved'})
 
 def teams_countries(request):
     category = 'Teams'
@@ -75,11 +80,11 @@ def teams_countries(request):
     if time_to_fetch(category, enpoint_name, endpoint):
         Country.objects.all().delete()
     else:
-        return HttpResponse('Items up to date')
+        return JsonResponse({'message':'Items up to date'})
     # countries = get_response(endpoint, 'teams_countries.json')
     countries = load_api_response('teams_countries.json')
 
     if save_countries(countries):
-        return HttpResponse("Teams countries saved")
+        return JsonResponse({'message':"Teams countries saved"})
     else:
-        return HttpResponse('Something went wrong') 
+        return JsonResponse({'message':'Something went wrong'}) 

@@ -17,13 +17,14 @@ headers = {
 }
 
 def get_response(endpoint, file_name):
-       
-    connection.request("GET", endpoint, headers=headers)
-    result = connection.getresponse()
-    response_body = result.read()
-    # # print('response_body',response_body) 
-    decoded_data = response_body.decode(encoding="utf-8")
-  
+    try:
+        connection.request("GET", endpoint, headers=headers)
+        result = connection.getresponse()
+        response_body = result.read()
+        # # print('response_body',response_body) 
+        decoded_data = response_body.decode(encoding="utf-8")
+    except Exception as e:
+        print(e)  
     # # deserialize the json data to a python dictionary 
     reponse_dict = json.loads(decoded_data)
 
@@ -43,20 +44,20 @@ def load_api_response(file_name='teams_info.json'):
         with open(file_path, 'r') as file:
             return json.load(file)
         
-def time_to_fetch(category, endpoint_name, endpoint): 
-    
+def time_to_fetch(category, endpoint_name, endpoint):     
     endpoint_tracker, created = EndpointTracker.objects.get_or_create(
             name=endpoint_name, category=category, endpoint=endpoint) 
-    
     # new request
     if created:
         return True
     # if endpoint request exists
     # and if last request time > 1 day, clear all countries data
-    if timezone.now() - endpoint_tracker.last_requested > timedelta(days=1):  
-            return True
-
-    return False
+    elif timezone.now() - endpoint_tracker.last_requested > timedelta(hours=24):  
+        # update last requested time
+        endpoint_tracker.last_requested = timezone.now()
+        return True
+    else:
+        return False
 
 def save_countries(countries):
     try:

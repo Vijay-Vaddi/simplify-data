@@ -8,38 +8,29 @@
                     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
                     
 </head>
-<style>
-    .main{ 
-        max-width: 80%;
-        margin: auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-</style>
 
 <body>
-    <section class="main">
-    <div class="btn-group">
+  <section class="main">
+    <div class="btn-group mb-3">
         <a href="{% url 'index' %}" type="button" class="btn btn-primary">Home</a>
-        <a href="" type="button" class="btn btn-primary">Get Squad</a>
-        <a href="" type="button" class="btn btn-primary">Get countries</a>
-        <a href="" type="button" class="btn btn-primary">Get Teams of a country</a>
-        <a href="" type="button" class="btn btn-primary">Get fixtures</a>
-      </div>
- <div>
-  {% if messages %}
-  {% for message in messages %}
-  <div class="alert alert-{{ message.tags }}" role="alert">
-    {{message}}
-  </div>
-  {% endfor %}
-  {% endif %}
-
- </div>
-    </section>
+        <a href="{% url 'team_players' %}" type="button" class="btn btn-primary">Get Squad</a>
+        <a href="{% url 'countries' %}" type="button" class="btn btn-primary">Get Countries</a>
+        <a href="{% url 'teams_countries' %}" type="button" class="btn btn-primary">Get Teams of a Country</a>
+        <a href="{% url 'fixture_by_date' %}" type="button" class="btn btn-primary">Get Fixtures</a>
+    </div>
+    <br>
+    <div class="alerts-container mt-4">
+        {% if messages %}
+          {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+</section>
  
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" 
                     integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
 

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from football_data.utils import get_response, load_api_response, time_to_fetch
 from football_data.models import Country
 from teams.models import Team
@@ -12,9 +12,9 @@ def get_players_of_a_team(request):
     endpoint = "/v3/players/squads?team=33"
 
     if time_to_fetch(category, endpoint_name, endpoint):
-        Country.objects.all().delete()
+        Player.objects.all().delete()
     else:
-        return HttpResponse('Items up to date')
+        return JsonResponse({'message':'Items up to date'})
 
     # add date checking logic to truncate the data. 
     squad = load_api_response('players_by_squad.json')[0]
@@ -32,21 +32,22 @@ def get_players_of_a_team(request):
             player_obj.team = team_obj
             player_obj.save()
 
-    return HttpResponse("Players saved")
+    return JsonResponse({'message':"Players saved"})
 
 
 def get_player_stats(request):
+    #stats ignore from both endpoints but only player info is saved
      
     category = 'Players'
     enpoint_name = 'Player statistics by league'
     # endpoint = "/v3/players?league=39&season=2020"
     endpoint =  "/v3/players?team=33&season=2020"
+    
     # add date checking logic to truncate the data. 
-
     if time_to_fetch(category, enpoint_name, endpoint):
-        Country.objects.all().delete()
+        Player.objects.all().delete()
     else:
-        return HttpResponse('Items up to date')
+        return JsonResponse({'message':'Items up to date'})
 
     # player_league_stats = get_response(endpoint, 'player_team_stats.json')
     player_league_stats = load_api_response('player_team_stats.json')
@@ -70,13 +71,13 @@ def get_player_stats(request):
             try:
                 if birth is not None:
                     country = birth.pop('country')
-                    country, created = Country.objects.get_or_create(name=country)
-                    birth_obj, created = Birth.objects.update_or_create(date=birth['date'],
+                    country, _ = Country.objects.get_or_create(name=country)
+                    birth_obj, _ = Birth.objects.update_or_create(date=birth['date'],
                                                 place=birth['place'], country=country, player=player_obj)
                     birth_obj.save()
                 else:
-                    print('here', birth)
-            except:
-                print('Something went wrong')
+                    print('Issue with item--', birth)
+            except Exception as e:
+                print('Something went wrong', e)
     
-    return HttpResponse("Players saved")
+    return JsonResponse({'message':"Players saved"})
