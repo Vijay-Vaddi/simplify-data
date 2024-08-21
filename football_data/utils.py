@@ -23,8 +23,9 @@ def get_response(endpoint, file_name):
         response_body = result.read()
         # # print('response_body',response_body) 
         decoded_data = response_body.decode(encoding="utf-8")
+        reponse_dict = json.loads(decoded_data)
     except Exception as e:
-        print(e)  
+        print(f"something went wrong {e}")  
     # # deserialize the json data to a python dictionary 
     reponse_dict = json.loads(decoded_data)
 

@@ -14,25 +14,22 @@ from django.contrib import messages
 
 def team_info(request, country=None):
     # check if country item is passed in url
-    if 'country' in request.GET:
-        country=request.GET['country']
-    else:
-        # default country
-        country = 'England' 
+    if not country:
+        country=request.GET.get('country', 'England')
 
     category = 'Teams'
-    endpoint_name = 'Teams Information'
+    endpoint_name = f'Teams of country {country}'
     endpoint = "/v3/teams?country="+country
 
     if time_to_fetch(category, endpoint_name, endpoint):
-        Team.objects.all().delete()
+        Team.objects.filter(name=country).delete()
     else:
         return JsonResponse({'message':f'Team and venue of {country} up to date'})
     try:
-    # team_response = get_response(endpoint,'teams_info.json')
+        team_response = get_response(endpoint,'teams_info.json')
         team_response= load_api_response('teams_info.json')
     except Exception as e:
-        return JsonResponse({'message':f'Error!! {e}'})
+        return JsonResponse({'message':f'Could not fetch teams for {country} Error!! {e}'})
     
     for team_item in team_response:
         # # get venue and team data from team info
@@ -107,10 +104,18 @@ def get_all_teams(request):
     pass to teams_info one by one which will save all available teams 
     '''
     countries = Country.objects.all()
+    i = 0
     for country in countries:
+        # skipping due to parameter error
+        if ' ' in country.name:
+            continue
         response = team_info(request, country=country.name)
         response_data = json.loads(response.content)
         message = response_data.get('message')
         messages.success(request, message)
-    
+        # testing only for 5 countries
+        i+=1
+        if i>5:
+            break
+
     return JsonResponse({'message':f'All the teams of available countries are fetched'})

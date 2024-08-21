@@ -30,10 +30,13 @@ class Fixture(models.Model):
                                null=True, blank=True, related_name='fixtures_score')
 
     class Meta:
-        ordering = ['date']
+        ordering = ['-date']
 
     def __str__(self) -> str:
-        return f"{self.home_team.name} - vs - {self.away_team.name}"
+        home_team = self.home_team.name if self.home_team else ' '
+        away_team = self.away_team.name if self.away_team else ' '
+        
+        return f"{home_team}- vs -{away_team}"
     
 class Status(models.Model):
     long = models.CharField(max_length=16, null=True, blank=True)

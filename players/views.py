@@ -7,28 +7,27 @@ from .models import Player, Birth
 import json
 from django.contrib import messages
 
-def get_players_of_a_team(request, team=None):
+def get_players_of_a_team(request, team_id=None):
     # check if team item is passed in url
-    if 'team' in request.GET:
-        team_id=str(request.GET['team'])
-    else:
-        # default team MANU
-        team_id = str(33)  
+    if not team_id:
+        team_id=str(request.GET.get('team_id', '33'))
     
     category = 'Players'
-    endpoint_name = 'Player'
-    endpoint = "/v3/players/squads?team="+team_id
+    endpoint_name = f'Players of a team'
+    endpoint = "/v3/players/squads?team="+str(team_id)
 
     if time_to_fetch(category, endpoint_name, endpoint):
-        Player.objects.all().delete()
+        # delete only the quad of one team to fetch new
+        Player.objects.filter(team=team_id).delete()
     else:
-        return JsonResponse({'message':'Items up to date'})
+        return JsonResponse({'message':f'Team id {team_id} players up to date'})
 
     try:
     # add date checking logic to truncate the data. 
+        squad = get_response(endpoint,'players_by_squad.json' )
         squad = load_api_response('players_by_squad.json')[0]
     except Exception as e:
-        return JsonResponse({'message':f"Squad for team with ID: {team_id} could not be fetched"})
+        return JsonResponse({'message':f"Squad for team_ID: {team_id} not be fetched, error {e}"})
     
     team = squad['team']
     players = squad['players']    
@@ -43,7 +42,7 @@ def get_players_of_a_team(request, team=None):
             player_obj.team = team_obj
             player_obj.save()
 
-    return JsonResponse({'message':"Players saved"})
+    return JsonResponse({'message':"Players of {team_obj.name} saved"})
 
 
 def get_player_stats(request):
@@ -98,11 +97,14 @@ def get_all_players(request):
     pass to get_players of a team one by one and save players
     '''
     teams = Team.objects.all()
-
+    i = 0
     for team in teams:
-        response = get_players_of_a_team(request, team=team.id)
+        response = get_players_of_a_team(request, team_id=team.id)
         response_data = json.loads(response.content)
         message = response_data.get('message')
         messages.success(request, message)
-    
+        i+=1
+        if i>6:
+            break
+
     return JsonResponse({'message':'All players available for all teams fetched'})
