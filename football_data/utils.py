@@ -25,9 +25,10 @@ def get_response(endpoint, file_name):
         decoded_data = response_body.decode(encoding="utf-8")
         reponse_dict = json.loads(decoded_data)
     except Exception as e:
-        print(f"something went wrong {e}")  
+        print(f"something went wrong {e}")
+          
     # # deserialize the json data to a python dictionary 
-    reponse_dict = json.loads(decoded_data)
+    # reponse_dict = json.loads(decoded_data)
 
     # # extract reponse part of the data
     response = reponse_dict['response']
@@ -70,7 +71,7 @@ def save_countries(countries):
             name = country_item['name'].replace('-', ' ').title()
             country, created = Country.objects.get_or_create(name=name)
             
-            # to ensure current data not replaced by Null or ''
+            # to ensure current data not replaced by Null or ' '
             if country_item['code']:
                 country.code = country_item['code'] 
             if country_item['flag']:

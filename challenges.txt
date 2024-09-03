@@ -6,6 +6,7 @@
 
 3. when trying to save countries from teams, country name with hyphens are saving as duplicates
     added name = country_item['name'].replace('-', ' ').title() to avoid duplicates 
+	and some data came with null values in ids, 
 
 4. Non String type values returned, using utf-8 solved this. 
 5. countries unique contraints failed even though searched by countryname, for eg "England"

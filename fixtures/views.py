@@ -23,7 +23,7 @@ def get_fixture_by_date(request):
         # Since fixture items need to be appended, db tables can stay as is.
         pass
     else:
-        return JsonResponse({'message':'Items up to date'})
+        return JsonResponse({'message':'Fixtures up to date'})
     
     fixtures = get_response(endpoint, "fixtures_by_date.json")
     fixtures = load_api_response("fixtures_by_date.json")
